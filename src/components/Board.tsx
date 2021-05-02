@@ -16,6 +16,7 @@ const Board: React.FC = () => {
             for (let j = 0; j < boardSize; ++j) {
                 row.push({
                     value: '',
+                    // TODO fix postion
                     position: {
                         x: i,
                         y: j
@@ -51,56 +52,44 @@ const Board: React.FC = () => {
         let win = false;
 
         const leftHorizontals = getHorizontals(field, 'LEFT');
-        win = checkWinOnSquares(leftHorizontals);
-        if (win) {
-            setWin(true);
-            return;
-        }
+        const rightHorizontals = getHorizontals(field, 'RIGHT').reverse();
+        rightHorizontals.pop();
+        const horizontals = [...rightHorizontals, ...leftHorizontals];
 
-        const rightHorizontals = getHorizontals(field, 'RIGHT');
-        win = checkWinOnSquares(rightHorizontals);
+        win = checkWinOnSquares(horizontals);
         if (win) {
             setWin(true);
             return;
         }
 
         const upVerticals = getVerticals(field, 'UP');
-        win = checkWinOnSquares(upVerticals);
-        if (win) {
-            setWin(true);
-            return;
-        }
+        const downVerticals = getVerticals(field, 'DOWN').reverse();
+        downVerticals.pop();
+        const verticals = [...downVerticals, ...upVerticals];
 
-        const downVerticals = getVerticals(field, 'DOWN');
-        win = checkWinOnSquares(downVerticals);
+        win = checkWinOnSquares(verticals);
         if (win) {
             setWin(true);
             return;
         }
 
         const leftUpDiagonals = getDiagonals(field, 'LU');
-        win = checkWinOnSquares(leftUpDiagonals);
+        const rightDownDiagonals = getDiagonals(field, 'RD').reverse();
+        rightDownDiagonals.pop();
+        const leftDiagonals = [...rightDownDiagonals, ...leftUpDiagonals];
+
+        win = checkWinOnSquares(leftDiagonals);
         if (win) {
             setWin(true);
             return;
         }
 
         const leftDownDiagonals = getDiagonals(field, 'LD');
-        win = checkWinOnSquares(leftDownDiagonals);
-        if (win) {
-            setWin(true);
-            return;
-        }
+        const rightUpDiagonals = getDiagonals(field, 'RU').reverse();
+        rightUpDiagonals.pop();
+        const rightDiagonals = [...rightUpDiagonals, ...leftDownDiagonals];
 
-        const rightDownDiagonals = getDiagonals(field, 'RD');
-        win = checkWinOnSquares(rightDownDiagonals);
-        if (win) {
-            setWin(true);
-            return;
-        }
-
-        const rightUpDiagonals = getDiagonals(field, 'RU');
-        win = checkWinOnSquares(rightUpDiagonals);
+        win = checkWinOnSquares(rightDiagonals);
         if (win) {
             setWin(true);
             return;
@@ -114,13 +103,19 @@ const Board: React.FC = () => {
         }
 
         let win = false;
-        for (let i = 1; i < adjacentCount; i++) {
-            win = squares[i - 1].value !== '' && squares[i - 1].value === squares[i].value;
+        let strike = 1;
+        for(let i = 1; i < squares.length; ++i) {
+            win = squares[i].value !== '' && squares[i - 1].value === squares[i].value;
             if (!win) {
-                break;
+                strike = 1;
+            }
+            if (win) {
+                strike += 1;
+                if (strike === adjacentCount) {
+                    return true;
+                }
             }
         }
-        console.log('Win', win)
         return win;
     }
 
@@ -137,7 +132,7 @@ const Board: React.FC = () => {
             }
             case 'RIGHT': {
                 for (let k = 0; k < adjacentCount; ++k) {
-                    if (field.position.y - k > 0) {
+                    if (field.position.y - k >= 0) {
                         horizontals.push(board[field.position.x][field.position.y - k]);
                     }
                 }
@@ -205,7 +200,7 @@ const Board: React.FC = () => {
             }
             case 'RU': {
                 for (let k = 0; k < adjacentCount; ++k) {
-                    if (field.position.x + k > boardSize && field.position.y - k >= 0) {
+                    if (field.position.x + k < boardSize && field.position.y - k >= 0) {
                         diagonal.push(board[field.position.x + k][field.position.y - k]);
                     }
                 }
