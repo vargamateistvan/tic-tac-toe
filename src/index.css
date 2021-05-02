@@ -11,3 +11,37 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.board {
+  width: fit-content;
+  margin: 20px auto;
+  padding: 2px;
+  border: 2px solid rgb(78, 78, 78);
+}
+
+.square-button {
+  width: 50px;
+  height: 50px;
+  padding: 5px;
+  background-color: rgb(247, 247, 247);
+  border: 1px solid rgb(194, 194, 194);
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.square-button:hover {
+  border: 3px solid rgb(138, 138, 138);
+}
+
+.square-button[disabled]:hover {
+  border: 1px solid rgb(194, 194, 194);
+}
+
+.square-button[value="O"] {
+  color: rgb(231, 58, 58);
+}
+
+.square-button[value="X"] {
+  color: rgb(58, 58, 231);
+}
+
